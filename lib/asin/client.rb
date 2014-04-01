@@ -70,9 +70,9 @@ module ASIN
     #
     # Have a look at the different search index values on the Amazon-Documentation[http://docs.amazonwebservices.com/AWSECommerceService/latest/DG/index.html]
     #
-    def search_keywords(*keywords)
-      params = keywords.last.is_a?(Hash) ? keywords.pop : {:SearchIndex => :Books, :ResponseGroup => :Medium}
-      response = call(params.merge(:Operation => :ItemSearch, :Keywords => keywords.join(' ')))
+    def search_keywords(*params)
+      params = params.first
+      response = call(params.reverse_merge(:Operation => :ItemSearch, :SearchIndex => :Books, :ResponseGroup => :Medium))
       arrayfy(response['ItemSearchResponse']['Items']['Item']).map {|item| handle_type(item, :item)}
     end
 
