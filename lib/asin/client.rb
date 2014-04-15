@@ -51,11 +51,16 @@ module ASIN
     #   lookup(asin, :ResponseGroup => [:Small, :AlternateVersions])
     #
     def lookup(*asins)
-      params = asins.last.is_a?(Hash) ? asins.pop : {:ResponseGroup => :Medium}
-      response = call(params.merge(:Operation => :ItemLookup, :ItemId => asins.join(',')))
+      params = asins.last.is_a?(Hash) ? asins.pop : {:ResponseGroup => :Offers}
+      response = call(params.merge(:Operation => :ItemLookup, :ItemId => asins.join(','), :ResponseGroup => :Offers, :IdType => :ASIN))
       arrayfy(response['ItemLookupResponse']['Items']['Item']).map {|item| handle_type(item, :item)}
     end
 
+    def image(*asins)
+      params = asins.last.is_a?(Hash) ? asins.pop : {:ResponseGroup => :Images}
+      response = call(params.merge(:Operation => :ItemLookup, :ItemId => asins.join(','), :ResponseGroup => :Images, :IdType => :ASIN))
+      arrayfy(response['ItemLookupResponse']['Items']['Item']).map {|item| handle_type(item, :item)}
+    end
     # Performs an +ItemSearch+ REST call against the Amazon API.
     #
     # Expects a search-string which can be an arbitrary array of strings (ASINs f.e.) and returns a list of items:
